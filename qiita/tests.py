@@ -38,6 +38,13 @@ class TestCient(TestCase):
         result = self.client.rate_limit()
         self.assertEqual(result.keys(), ['limit', 'remaining'])
 
+    def test_init_options(self):
+        from .client import Client
+        params = {'url_name': 'heavenshell', 'password': 'foobar'}
+        client = Client(params)
+        self.assertEquals(client.options['url_name'], params['url_name'])
+        self.assertEquals(client.options['password'], params['password'])
+
 
 class TestItems(TestCase):
     def test_items(self):

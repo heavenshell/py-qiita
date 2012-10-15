@@ -16,11 +16,16 @@ from .exceptions import on_complte
 
 class Client(object):
     ROOT_URL = 'https://qiita.com/api/v1/{0}'
-    options_keys = {'url_name': '', 'password': '', 'token': ''}
+    options = {'url_name': '', 'password': '', 'token': ''}
     requests = None
 
     def __init__(self, options=None):
         self.requests = requests
+        if options is None:
+            return
+        for k in self.options:
+            if k in options:
+                self.options[k] = options[k]
 
     def rate_limit(self):
         return self.request('get', self.ROOT_URL.format('/rate_limit'))
