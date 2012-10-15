@@ -15,11 +15,12 @@ from .exceptions import on_complte
 
 
 class Client(object):
-    ROOT_URL = 'https://qiita.com/api/v1/{0}'
-    options = {'url_name': '', 'password': '', 'token': ''}
+    ROOT_URL = 'https://qiita.com/api/v1{0}'
+    options = {'url_name': '', 'password': '', 'token': None}
     requests = None
 
     def __init__(self, options=None):
+        # TODO: Use urllib3?
         self.requests = requests
         if options is None:
             return
@@ -28,41 +29,90 @@ class Client(object):
                 self.options[k] = options[k]
 
     def rate_limit(self):
-        return self.request('get', self.ROOT_URL.format('/rate_limit'))
+        """Get api rate limit.
+
+        Max 150 count/hour.
+        """
+        return self.request('get', '/rate_limit')
 
     def login(self):
+        """login
+
+        Login to Qiita to get token.
+        """
         params = {
             'url_name': self.options['url_name'],
             'password': self.options['password']
         }
-        response = self.request('post', self.ROOT_URL.format('/auth'), params)
+        response = self.request('post', '/auth', params)
+        if 'token' in response:
+            self.options['token'] = response['token']
 
         return response
 
-    def connection(self):
-        pass
+    def get(self, path, params=None):
+        """GET request.
 
-    def get(self):
-        pass
+        :param path:
+        :param params:
+        """
+        return self.request('get', path, params)
 
-    def delete(self):
-        pass
+    def delete(self, path, params=None):
+        """DELETE request.
 
-    def post(self):
-        pass
+        :param path:
+        :param params:
+        """
+        return self.request('delete', path, params)
 
-    def put(self):
-        pass
+    def post(self, path, params=None):
+        """POST request.
+
+        :param path:
+        :param params:
+        """
+        return self.request('post', path, params)
+
+    def put(self, path, params=None):
+        """PUT request.
+
+        :param path:
+        :param params:
+        """
+        return self.request('put', path, params)
 
     def request(self, method, path, params=None):
+        """Requests.
+
+        requests depends on Requests library.
+
+        see `<http://docs.python-requests.org/en/latest/>_` more details.
+
+        :param method:
+        :param path:
+        :param params:
+        """
+        if self.options['token'] is not None:
+            if params is None:
+                params = {}
+            params['token'] = self.options['token']
+
+        path = self.ROOT_URL.format(path)
+
+        response = None
+        headers = {'Content-Type': 'application/json'}
         if method == 'get':
-            response = self.requests.get(path, params=params)
+            response = self.requests.get(path, params=params, headers=headers)
+
         elif method == 'delete':
-            response = self.requests.delete(path, params)
+            response = self.requests.delete(path, params=params,
+                                            headers=headers)
         elif method == 'post':
-            response = self.requests.post(path, params)
+            response = self.requests.post(path, params= params, headers=headers)
+
         elif method == 'put':
-            response = self.requests.put(path, params)
+            response = self.requests.put(path, params=params, headers=headers)
 
         if response.status_code != 200:
             on_complte(response.status_code)
