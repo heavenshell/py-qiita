@@ -14,13 +14,13 @@ from .client import Client
 
 class Items(Client):
     def post_item(self, params):
-        self.post('/items', params)
+        return self.request('post', '/items', params)
 
     def update_item(self, uuid, params):
-        return self.put('/items/${uuid}'.format({'uuid': uuid}), params)
+        return self.request('put', '/items/{0}'.format(uuid), params)
 
     def delete_item(self, uuid):
-        return self.delete('/items/${uuid}'.format({'uuid': uuid}))
+        return self.request('delete', '/items/{0}'.format(uuid))
 
     def item(self, uuid):
         """Get newest post.
@@ -29,7 +29,7 @@ class Items(Client):
 
         :param uuid:
         """
-        return self.get('/items/${uuid}'.format({'uuid': uuid}))
+        return self.request('get', '/items/{0}'.format(uuid))
 
     def search_items(self, query, params=None):
         """search_items
@@ -42,18 +42,18 @@ class Items(Client):
         else:
             params['q'] = query
 
-        return self.get('/search', params)
+        return self.request('get', '/search', params)
 
     def stock_item(self, uuid):
         """Get user's stock.
 
         :param uuid:
         """
-        return self.put('/items/${uuid}/stock'.format({'uuid': uuid}))
+        return self.request('put', '/items/{0}/stock'.format(uuid))
 
     def unstock_item(self, uuid):
         """Unstock item.
 
         :param uuid:
         """
-        return self.delete('/items/${uuid}/stock'.format({'uuid': uuid}))
+        return self.request('delete', '/items/{0}/stock'.format(uuid))
