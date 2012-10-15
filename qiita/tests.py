@@ -26,8 +26,15 @@ class TestQiita(TestCase):
 
 class TestCient(TestCase):
     def setUp(self):
+        import os
         from .client import Client
-        self.client = Client()
+        self.params = {'url_name': '', 'password': ''}
+        if 'QIITA_URL_NAME' in os.environ:
+            self.params['url_name'] = os.environ['QIITA_URL_NAME']
+        if 'QIITA_PASSWORD' in os.environ:
+            self.params['password'] = os.environ['QIITA_PASSWORD']
+
+        self.client = Client(self.params)
 
     def test_client(self):
         """ Client should create. """
@@ -39,12 +46,14 @@ class TestCient(TestCase):
         self.assertEqual(result.keys(), ['limit', 'remaining'])
 
     def test_init_options(self):
-        from .client import Client
-        params = {'url_name': 'heavenshell', 'password': 'foobar'}
-        client = Client(params)
-        self.assertEquals(client.options['url_name'], params['url_name'])
-        self.assertEquals(client.options['password'], params['password'])
+        client = self.client
+        self.assertEquals(client.options['url_name'], self.params['url_name'])
+        self.assertEquals(client.options['password'], self.params['password'])
 
+    def test_get_token(self):
+        """ login should return token. """
+        result = self.client.login()
+        self.assertTrue('token' in result)
 
 class TestItems(TestCase):
     def test_items(self):

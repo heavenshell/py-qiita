@@ -31,7 +31,13 @@ class Client(object):
         return self.request('get', self.ROOT_URL.format('/rate_limit'))
 
     def login(self):
-        pass
+        params = {
+            'url_name': self.options['url_name'],
+            'password': self.options['password']
+        }
+        response = self.request('post', self.ROOT_URL.format('/auth'), params)
+
+        return response
 
     def connection(self):
         pass
