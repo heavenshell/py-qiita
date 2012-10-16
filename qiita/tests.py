@@ -47,10 +47,12 @@ class TestCient(TestCase):
         self.assertTrue(isinstance(self.client, Client))
 
     def test_rate_limit(self):
+        """ Client should get rate limit. """
         result = self.client.rate_limit()
         self.assertEqual(result.keys(), ['limit', 'remaining'])
 
     def test_init_options(self):
+        """ Client should set options. """
         client = self.client
         self.assertEquals(client.options['url_name'], self.params['url_name'])
         self.assertEquals(client.options['password'], self.params['password'])
@@ -83,16 +85,44 @@ class TestTags(TestCase):
 
 class TestUsers(TestCase):
     def setUp(self):
-         self.params = settings()
+        from .users import Users
+        self.params = settings()
+        self.users = Users()
 
     def test_users(self):
         """ Users should create. """
         from .users import Users
-        self.users = Users()
         self.assertTrue(isinstance(self.users, Users))
 
-    def test_user_items(self):
-        from .users import Users
-        users = Users()
-        result = users.user_items(self.params['url_name'])
+    def test_public_user_items(self):
+        """ Users should return public items. """
+        result = self.users.user_items()
         self.assertTrue(isinstance(result, list))
+
+    def test_user_items(self):
+        """ Users should return user's items. """
+        result = self.users.user_items(self.params['url_name'])
+        self.assertTrue(isinstance(result, list))
+
+    def test_user(self):
+        """ Users should get user info. """
+        result = self.users.user(self.params['url_name'])
+        self.assertTrue('url_name' in result)
+        self.assertTrue('name' in result)
+
+    def test_following_tags(self):
+        """ Users should get following tags. """
+        result = self.users.user_following_tags(self.params['url_name'])
+        self.assertTrue('name' in result[0])
+        self.assertTrue('url_name' in result[0])
+
+    def test_user_following_users(self):
+        """ Users should get following users. """
+        result = self.users.user_following_users(self.params['url_name'])
+        self.assertTrue('name' in result[0])
+        self.assertTrue('url_name' in result[0])
+
+    def test_user_stocks(self):
+        """ Users should get stock. """
+        result = self.users.user_stocks(self.params['url_name'])
+        self.assertTrue('body' in result[0])
