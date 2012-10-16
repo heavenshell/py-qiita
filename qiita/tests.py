@@ -12,6 +12,17 @@
 from unittest import TestCase
 
 
+def settings():
+    import os
+    params = {'url_name': '', 'password': ''}
+    if 'QIITA_URL_NAME' in os.environ:
+        params['url_name'] = os.environ['QIITA_URL_NAME']
+    if 'QIITA_PASSWORD' in os.environ:
+        params['password'] = os.environ['QIITA_PASSWORD']
+
+    return params
+
+
 class TestQiita(TestCase):
     def test_has_version(self):
         """ Qiita modlue has version. """
@@ -26,14 +37,8 @@ class TestQiita(TestCase):
 
 class TestCient(TestCase):
     def setUp(self):
-        import os
         from .client import Client
-        self.params = {'url_name': '', 'password': ''}
-        if 'QIITA_URL_NAME' in os.environ:
-            self.params['url_name'] = os.environ['QIITA_URL_NAME']
-        if 'QIITA_PASSWORD' in os.environ:
-            self.params['password'] = os.environ['QIITA_PASSWORD']
-
+        self.params = settings()
         self.client = Client(self.params)
 
     def test_client(self):
@@ -55,6 +60,11 @@ class TestCient(TestCase):
         result = self.client.login()
         self.assertTrue('token' in result)
 
+    def test_get_token_to_options(self):
+        """ login should set token to options property. """
+        result = self.client.login()
+        self.assertEquals(self.client.options['token'], result['token'])
+
 class TestItems(TestCase):
     def test_items(self):
         """ Items should create. """
@@ -72,8 +82,17 @@ class TestTags(TestCase):
 
 
 class TestUsers(TestCase):
+    def setUp(self):
+         self.params = settings()
+
     def test_users(self):
         """ Users should create. """
         from .users import Users
         self.users = Users()
         self.assertTrue(isinstance(self.users, Users))
+
+    def test_user_items(self):
+        from .users import Users
+        users = Users()
+        result = users.user_items(self.params['url_name'])
+        self.assertTrue(isinstance(result, list))
