@@ -20,7 +20,7 @@ class Client(object):
     requests = None
 
     def __init__(self, options=None):
-        # TODO: Use urllib3?
+        # TODO: Use urllib?
         self.requests = requests
         if options is None:
             return
@@ -33,7 +33,7 @@ class Client(object):
 
         Max 150 count/hour.
         """
-        return self.request('get', '/rate_limit')
+        return self._request('get', '/rate_limit')
 
     def login(self):
         """login
@@ -44,7 +44,7 @@ class Client(object):
             'url_name': self.options['url_name'],
             'password': self.options['password']
         }
-        response = self.request('post', '/auth', params)
+        response = self._request('post', '/auth', params)
         if 'token' in response:
             self.options['token'] = response['token']
 
@@ -56,7 +56,7 @@ class Client(object):
         :param path:
         :param params:
         """
-        return self.request('get', path, params)
+        return self._request('get', path, params)
 
     def delete(self, path, params=None):
         """DELETE request.
@@ -64,7 +64,7 @@ class Client(object):
         :param path:
         :param params:
         """
-        return self.request('delete', path, params)
+        return self._request('delete', path, params)
 
     def post(self, path, params=None):
         """POST request.
@@ -72,7 +72,7 @@ class Client(object):
         :param path:
         :param params:
         """
-        return self.request('post', path, params)
+        return self._request('post', path, params)
 
     def put(self, path, params=None):
         """PUT request.
@@ -80,14 +80,14 @@ class Client(object):
         :param path:
         :param params:
         """
-        return self.request('put', path, params)
+        return self._request('put', path, params)
 
-    def request(self, method, path, params=None):
-        """Requests.
+    def _request(self, method, path, params=None):
+        """_requests.
 
-        requests depends on Requests library.
+        _requests depends on _requests library.
 
-        see `<http://docs.python-requests.org/en/latest/>_` more details.
+        see `<http://docs.python-_requests.org/en/latest/>_` more details.
 
         :param method:
         :param path:
