@@ -76,10 +76,13 @@ class TestItems(TestCase):
 
 
 class TestTags(TestCase):
+    def setUp(self):
+        from .tags import Tags
+        self.tags = Tags()
+
     def test_tags(self):
         """ Tags should create. """
         from .tags import Tags
-        self.tags = Tags()
         self.assertTrue(isinstance(self.tags, Tags))
 
 
@@ -126,3 +129,12 @@ class TestUsers(TestCase):
         """ Users should get stock. """
         result = self.users.user_stocks(self.params['url_name'])
         self.assertTrue('body' in result[0])
+
+    def test_user_with_logged_in(self):
+        """ Users should get user's info with sending token."""
+        from .users import Users
+        client = Users(settings())
+        client.login()
+        result = client.user(self.params['url_name'])
+        self.assertTrue('url_name' in result)
+        self.assertTrue('name' in result)
