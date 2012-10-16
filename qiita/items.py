@@ -3,7 +3,7 @@
     qiita.items
     ~~~~~~~~~~~
 
-    Qiita items.
+    Wrapper for Qiita items.
 
 
     :copyright: (c) 2012 Shinya Ohyanagi, All rights reserved.
@@ -14,13 +14,26 @@ from .client import Client
 
 class Items(Client):
     def post_item(self, params):
-        return self.request('post', '/items', params)
+        """Post new item.
+
+        :param params:
+        """
+        return self.post('/items', params)
 
     def update_item(self, uuid, params):
-        return self.request('put', '/items/{0}'.format(uuid), params)
+        """Update item.
+
+        :param uuid:
+        :param params:
+        """
+        return self.put('/items/{0}'.format(uuid), params)
 
     def delete_item(self, uuid):
-        return self.request('delete', '/items/{0}'.format(uuid))
+        """Delete item.
+
+        :param uuid:
+        """
+        return self.delete('/items/{0}'.format(uuid))
 
     def item(self, uuid):
         """Get newest post.
@@ -29,10 +42,14 @@ class Items(Client):
 
         :param uuid:
         """
-        return self.request('get', '/items/{0}'.format(uuid))
+        return self.get('/items/{0}'.format(uuid))
 
     def search_items(self, query, params=None):
-        """search_items
+        """Search items.
+
+        Following query parameters are available.
+          - q
+          - stocked
 
         :param query:
         :param params:
@@ -42,18 +59,18 @@ class Items(Client):
         else:
             params['q'] = query
 
-        return self.request('get', '/search', params)
+        return self.get('/search', params)
 
     def stock_item(self, uuid):
         """Get user's stock.
 
         :param uuid:
         """
-        return self.request('put', '/items/{0}/stock'.format(uuid))
+        return self.put('/items/{0}/stock'.format(uuid))
 
     def unstock_item(self, uuid):
         """Unstock item.
 
         :param uuid:
         """
-        return self.request('delete', '/items/{0}/stock'.format(uuid))
+        return self.delete('/items/{0}/stock'.format(uuid))

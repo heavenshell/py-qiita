@@ -68,11 +68,30 @@ class TestCient(TestCase):
         self.assertEquals(self.client.options['token'], result['token'])
 
 class TestItems(TestCase):
+    def setUp(self):
+        from .items import Items
+        self.params = settings()
+        self.items = Items(self.params)
+        self.items.login()
+
     def test_items(self):
         """ Items should create. """
         from .items import Items
         self.items = Items()
         self.assertTrue(isinstance(self.items, Items))
+
+    def test_post_item(self):
+        """ Items should post new item. """
+        params = {
+            'title': u'Qiita Python library test.',
+            'body': u'I love python!',
+            'tags': [{'name': 'python', 'versions': ['2.6', '2.7']}],
+            'private': False,
+            'gist': False,
+            'tweet': False
+        }
+        result = self.items.post_item(params)
+        self.assertEquals(result['title'], params['title'])
 
 
 class TestTags(TestCase):
