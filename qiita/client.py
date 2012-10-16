@@ -109,10 +109,12 @@ class Client(object):
             response = self.requests.delete(path, params=params,
                                             headers=headers)
         elif method == 'post':
-            response = self.requests.post(path, params= params, headers=headers)
+            response = self.requests.post(path, data=json.dumps(params),
+                                          headers=headers)
 
         elif method == 'put':
-            response = self.requests.put(path, params=params, headers=headers)
+            response = self.requests.put(path, data=json.dumps(params),
+                                         headers=headers)
 
         if response.status_code != 200:
             on_complte(response.status_code)
