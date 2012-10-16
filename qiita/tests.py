@@ -78,12 +78,25 @@ class TestItems(TestCase):
 class TestTags(TestCase):
     def setUp(self):
         from .tags import Tags
+        self.params = settings()
         self.tags = Tags()
 
     def test_tags(self):
         """ Tags should create. """
         from .tags import Tags
         self.assertTrue(isinstance(self.tags, Tags))
+
+    def test_tag_items(self):
+        """ Tags should get items search by tag. """
+        tags = self.tags.tag_items('python')
+        self.assertTrue('body' in tags[0])
+        self.assertTrue('uuid' in tags[0])
+
+    def test_get_tags(self):
+        """ Tags should get tags. """
+        tags = self.tags.tags()
+        self.assertTrue('name' in tags[0])
+        self.assertTrue('url_name' in tags[0])
 
 
 class TestUsers(TestCase):
