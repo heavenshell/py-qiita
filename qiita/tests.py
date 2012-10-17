@@ -67,16 +67,6 @@ class TestCient(TestCase):
         result = self.client.login()
         self.assertEqual(self.client.options['token'], result['token'])
 
-    def test_should_raise_exception(self):
-        from .exceptions import NotFoundError
-        # with self.assertRaises() plays with Python2.7+
-        try:
-            print self.client.get('foo')
-            self.client.rate_limit()
-        except NotFoundError as e:
-            print e
-
-
 
 class TestItems(TestCase):
     def setUp(self):
@@ -109,13 +99,22 @@ class TestItems(TestCase):
 
     def test_delete_item(self):
         """ Items should delete item. """
-        result = self.items.post_item(self.params)
+        post_result = self.items.post_item(self.params)
 
-        result = self.items.delete_item(result['uuid'])
-        print result
+        result = self.items.delete_item(post_result['uuid'])
+        self.assertEqual(result, '')
 
+    def test_update_item(self):
+        """ Items should update item. """
+        post_result = self.items.post_item(self.params)
+        self.params['title'] = u'Qiita Python library test update.'
+        self.params['body'] = u'I love Python and Vim!'
 
+        result = self.items.update_item(post_result['uuid'], self.params)
+        self.assertEqual(result['title'], self.params['title'])
 
+        # clean up
+        self.items.delete_item(result['uuid'])
 
 
 class TestTags(TestCase):
@@ -194,3 +193,14 @@ class TestUsers(TestCase):
         result = client.user(self.params['url_name'])
         self.assertTrue('url_name' in result)
         self.assertTrue('name' in result)
+
+
+class TestException(object):
+    def test_should_raise_not_found_exception(self):
+        from .exceptions import NotFoundError
+        # with self.assertRaises() plays with Python2.7+
+        try:
+            self.client.get('/users/foobar')
+            self.fail()
+        except NotFoundError:
+            self.assertTrue(True)
