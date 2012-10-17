@@ -9,7 +9,6 @@
     :copyright: (c) 2012 Shinya Ohyanagi, All rights reserved.
     :license: BSD, see LICENSE for more details.
 """
-import re
 import requests
 from . import json
 from .exceptions import on_complte
@@ -117,7 +116,7 @@ class Client(object):
             response = self.requests.put(path, data=json.dumps(params),
                                          headers=headers)
 
-        if response.error is not None:
+        if response.ok is False:
             on_complte(response.status_code)
 
         result = '' if response.content == '' else json.loads(response.content)
