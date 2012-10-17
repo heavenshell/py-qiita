@@ -27,7 +27,7 @@ class TestQiita(TestCase):
     def test_has_version(self):
         """ Qiita modlue has version. """
         from . import __version__
-        self.assertEquals(__version__, '0.1')
+        self.assertEqual(__version__, '0.1')
 
     def test_has_json(self):
         """ Qiita modlue can load JSON library. """
@@ -54,8 +54,8 @@ class TestCient(TestCase):
     def test_init_options(self):
         """ Client should set options. """
         client = self.client
-        self.assertEquals(client.options['url_name'], self.params['url_name'])
-        self.assertEquals(client.options['password'], self.params['password'])
+        self.assertEqual(client.options['url_name'], self.params['url_name'])
+        self.assertEqual(client.options['password'], self.params['password'])
 
     def test_get_token(self):
         """ login should return token. """
@@ -65,7 +65,7 @@ class TestCient(TestCase):
     def test_get_token_to_options(self):
         """ login should set token to options property. """
         result = self.client.login()
-        self.assertEquals(self.client.options['token'], result['token'])
+        self.assertEqual(self.client.options['token'], result['token'])
 
 class TestItems(TestCase):
     def setUp(self):
@@ -91,7 +91,7 @@ class TestItems(TestCase):
             'tweet': False
         }
         result = self.items.post_item(params)
-        self.assertEquals(result['title'], params['title'])
+        self.assertEqual(result['title'], params['title'])
 
 
 class TestTags(TestCase):
