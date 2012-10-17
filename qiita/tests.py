@@ -67,12 +67,31 @@ class TestCient(TestCase):
         result = self.client.login()
         self.assertEqual(self.client.options['token'], result['token'])
 
+    def test_should_raise_exception(self):
+        from .exceptions import NotFoundError
+        # with self.assertRaises() plays with Python2.7+
+        try:
+            print self.client.get('foo')
+            self.client.rate_limit()
+        except NotFoundError as e:
+            print e
+
+
+
 class TestItems(TestCase):
     def setUp(self):
         from .items import Items
         self.params = settings()
         self.items = Items(self.params)
         self.items.login()
+        self.params = {
+            'title': u'Qiita Python library test.',
+            'body': u'I love python!',
+            'tags': [{'name': 'python', 'versions': ['2.6', '2.7']}],
+            'private': False,
+            'gist': False,
+            'tweet': False
+        }
 
     def test_items(self):
         """ Items should create. """
@@ -82,16 +101,21 @@ class TestItems(TestCase):
 
     def test_post_item(self):
         """ Items should post new item. """
-        params = {
-            'title': u'Qiita Python library test.',
-            'body': u'I love python!',
-            'tags': [{'name': 'python', 'versions': ['2.6', '2.7']}],
-            'private': False,
-            'gist': False,
-            'tweet': False
-        }
-        result = self.items.post_item(params)
-        self.assertEqual(result['title'], params['title'])
+        result = self.items.post_item(self.params)
+        self.assertEqual(result['title'], self.params['title'])
+
+        # cleanup
+        self.items.delete_item(result['uuid'])
+
+    def test_delete_item(self):
+        """ Items should delete item. """
+        result = self.items.post_item(self.params)
+
+        result = self.items.delete_item(result['uuid'])
+        print result
+
+
+
 
 
 class TestTags(TestCase):
