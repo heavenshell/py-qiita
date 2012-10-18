@@ -14,7 +14,7 @@ from unittest import TestCase
 
 def settings():
     import os
-    params = {'url_name': '', 'password': ''}
+    params = {'url_name': None, 'password': None}
     if 'QIITA_URL_NAME' in os.environ:
         params['url_name'] = os.environ['QIITA_URL_NAME']
     if 'QIITA_PASSWORD' in os.environ:
@@ -39,7 +39,7 @@ class TestCient(TestCase):
     def setUp(self):
         from .client import Client
         self.params = settings()
-        self.client = Client(self.params)
+        self.client = Client(**self.params)
 
     def test_client(self):
         """ Client should create. """
@@ -54,8 +54,8 @@ class TestCient(TestCase):
     def test_init_options(self):
         """ Client should set options. """
         client = self.client
-        self.assertEqual(client.options['url_name'], self.params['url_name'])
-        self.assertEqual(client.options['password'], self.params['password'])
+        self.assertEqual(client.url_name, self.params['url_name'])
+        self.assertEqual(client.password, self.params['password'])
 
     def test_get_token(self):
         """ login should return token. """
@@ -63,16 +63,16 @@ class TestCient(TestCase):
         self.assertTrue('token' in result)
 
     def test_get_token_to_options(self):
-        """ login should set token to options property. """
+        """ login should set token to token property. """
         result = self.client.login()
-        self.assertEqual(self.client.options['token'], result['token'])
+        self.assertEqual(self.client.token, result['token'])
 
 
 class TestItems(TestCase):
     def setUp(self):
         from .items import Items
         self.params = settings()
-        self.items = Items(self.params)
+        self.items = Items(**self.params)
         self.items.login()
         self.params = {
             'title': u'Qiita Python library test.',
@@ -115,6 +115,18 @@ class TestItems(TestCase):
 
         # clean up
         self.items.delete_item(result['uuid'])
+
+    def test_public_item(self):
+        """ Items should get item without login. """
+        from .items import Items
+        client = Items()
+        items = client.item('3288bf96ddc14bcef31c')
+        self.assertTrue('body' in items)
+
+    def test_search_items(self):
+        """ Items should search items by query 'python'. """
+        items = self.items.search_items(query='python')
+        self.assertTrue('body' in items[0])
 
 
 class TestTags(TestCase):
@@ -188,15 +200,20 @@ class TestUsers(TestCase):
     def test_user_with_logged_in(self):
         """ Users should get user's info with sending token."""
         from .users import Users
-        client = Users(settings())
+        client = Users(**settings())
         client.login()
         result = client.user(self.params['url_name'])
         self.assertTrue('url_name' in result)
         self.assertTrue('name' in result)
 
 
-class TestException(object):
+class TestException(TestCase):
+    def setUp(self):
+        from .client import Client
+        self.client = Client()
+
     def test_should_raise_not_found_exception(self):
+        """ NotFound Error should be raised if user not exists. """
         from .exceptions import NotFoundError
         # with self.assertRaises() plays with Python2.7+
         try:
@@ -204,3 +221,5 @@ class TestException(object):
             self.fail()
         except NotFoundError:
             self.assertTrue(True)
+        except Exception:
+            self.fail()

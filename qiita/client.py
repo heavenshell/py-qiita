@@ -16,17 +16,19 @@ from .exceptions import on_complte
 
 class Client(object):
     ROOT_URL = 'https://qiita.com/api/v1{0}'
-    options = {'url_name': '', 'password': '', 'token': None}
     requests = None
 
-    def __init__(self, options=None):
-        # TODO: Use urllib?
-        self.requests = requests
-        if options is None:
-            return
-        for k in self.options:
-            if k in options:
-                self.options[k] = options[k]
+    def __init__(self, **kwargs):
+        options = ['url_name', 'password', 'token']
+        for option in options:
+            if option in kwargs:
+                setattr(self, option, kwargs[option])
+            else:
+                setattr(self, option, None)
+
+        if self.requests is None:
+            # TODO: Use urllib?
+            self.requests = requests
 
     def rate_limit(self):
         """Get api rate limit.
@@ -40,13 +42,10 @@ class Client(object):
 
         Login to Qiita to get token.
         """
-        params = {
-            'url_name': self.options['url_name'],
-            'password': self.options['password']
-        }
+        params = {'url_name': self.url_name, 'password': self.password}
         response = self._request('post', '/auth', params)
         if 'token' in response:
-            self.options['token'] = response['token']
+            self.token = response['token']
 
         return response
 
@@ -93,10 +92,10 @@ class Client(object):
         :param path:
         :param params:
         """
-        if self.options['token'] is not None:
+        if self.token is not None:
             if params is None:
                 params = {}
-            params['token'] = self.options['token']
+            params['token'] = self.token
 
         path = self.ROOT_URL.format(path)
 
