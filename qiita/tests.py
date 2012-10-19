@@ -41,11 +41,6 @@ class TestCient(TestCase):
         self.params = settings()
         self.client = Client(**self.params)
 
-    def test_client(self):
-        """ Client should create. """
-        from .client import Client
-        self.assertTrue(isinstance(self.client, Client))
-
     def test_rate_limit(self):
         """ Client should get rate limit. """
         result = self.client.rate_limit()
@@ -67,6 +62,13 @@ class TestCient(TestCase):
         result = self.client.login()
         self.assertEqual(self.client.token, result['token'])
 
+    def test_should_set_requests_module(self):
+        import requests
+        from .client import Client
+        client = Client(requests=requests)
+        result = client.rate_limit()
+        self.assertEqual(result.keys(), ['limit', 'remaining'])
+
 
 class TestItems(TestCase):
     def setUp(self):
@@ -83,18 +85,12 @@ class TestItems(TestCase):
             'tweet': False
         }
 
-    def test_items(self):
-        """ Items should create. """
-        from .items import Items
-        self.items = Items()
-        self.assertTrue(isinstance(self.items, Items))
-
     def test_post_item(self):
         """ Items should post new item. """
         result = self.items.post_item(self.params)
         self.assertEqual(result['title'], self.params['title'])
 
-        # cleanup
+        # clean up
         self.items.delete_item(result['uuid'])
 
     def test_delete_item(self):
@@ -128,17 +124,44 @@ class TestItems(TestCase):
         items = self.items.search_items(query='python')
         self.assertTrue('body' in items[0])
 
+    def test_search_stock(self):
+        """ Items should search stocked itmes by query. """
+        params = {'stocked': 'true'}
+        items = self.items.search_items(query='vim', params=params)
+        self.assertTrue('body' in items[0])
+
+    def test_stock_item(self):
+        """ Items should stock post.  """
+        stocked = self.items.stock_item('1489e2b291fed74713b2')
+        self.assertEqual(stocked, '')
+
+        # Clean up
+        self.items.unstock_item('1489e2b291fed74713b2')
+
+    def test_unstock_item(self):
+        """ Items should unstock item. """
+        self.items.stock_item('1489e2b291fed74713b2')
+
+        stocked = self.items.unstock_item('1489e2b291fed74713b2')
+        self.assertEqual(stocked, '')
+
+    def test_should_raise_not_found_exception(self):
+        """ Items should raise exception when there were no stocked item. """
+        from .exceptions import NotFoundError
+        try:
+            self.items.unstock_item('1489e2b291fed74713b2')
+            self.fail()
+        except NotFoundError:
+            self.assertTrue(True)
+        except Exception:
+            self.fail()
+
 
 class TestTags(TestCase):
     def setUp(self):
         from .tags import Tags
         self.params = settings()
         self.tags = Tags()
-
-    def test_tags(self):
-        """ Tags should create. """
-        from .tags import Tags
-        self.assertTrue(isinstance(self.tags, Tags))
 
     def test_tag_items(self):
         """ Tags should get items search by tag. """
@@ -158,11 +181,6 @@ class TestUsers(TestCase):
         from .users import Users
         self.params = settings()
         self.users = Users()
-
-    def test_users(self):
-        """ Users should create. """
-        from .users import Users
-        self.assertTrue(isinstance(self.users, Users))
 
     def test_public_user_items(self):
         """ Users should return public items. """
