@@ -3,7 +3,7 @@
     qiita.users
     ~~~~~~~~~~~
 
-    Qiita users.
+    Wrapper for Qiita users.
 
 
     :copyright: (c) 2012 Shinya Ohyanagi, All rights reserved.
