@@ -8,10 +8,12 @@ Installation
 
 .. code-block:: sh
 
-  $ virtualenv --distribute qiita
-  $ source qiita/bin/activate
-  $ cd qiita
-  $ pip install py-qiita
+  $ virtualenv --distribute qiita_sample
+  $ source qiita_sample/bin/activate
+  $ cd qiita_sample
+  $ pip install qiita
+
+Qiita depends on `Requests <http://docs.python-requests.org/en/latest/index.html>`_.
 
 
 Usage
@@ -92,7 +94,7 @@ Post/Update/Delete an item
   params = {
     'title': 'Hello',
     'body': 'markdown text',
-    'tags': [{ name: 'python', versions: ['2.6', '2.7'] }],
+    'tags': [{name: 'python', versions: ['2.6', '2.7']}],
     'private': False
   }
   # post
@@ -104,7 +106,6 @@ Post/Update/Delete an item
 
   # delete
   cient.delete_item(item['uuid'])
-
 
 Stock/Unstock item
 ~~~~~~~~~~~~~~~~~~
