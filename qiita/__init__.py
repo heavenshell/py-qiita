@@ -12,7 +12,13 @@
 try:
     import simplejson as json
 except:
-    import jsnon
+    import json
+
+from .client import Client
+from .items import Items
+from .users import Users
+from .tags import Tags
+
 
 __version__ = '0.1'
-__all__ = ['json']
+__all__ = ['json', 'Client', 'Items', 'Users', 'Tags']
