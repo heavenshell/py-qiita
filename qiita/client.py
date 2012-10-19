@@ -30,6 +30,9 @@ class Client(object):
             # TODO: Use urllib?
             self.requests = requests
 
+        if self.token is None and self.url_name and self.password:
+            self.login()
+
     def rate_limit(self):
         """Get api rate limit.
 
@@ -97,22 +100,22 @@ class Client(object):
                 params = {}
             params['token'] = self.token
 
-        path = self.ROOT_URL.format(path)
+        uri = self.ROOT_URL.format(path)
 
         response = None
         headers = {'Content-Type': 'application/json'}
         if method == 'get':
-            response = self.requests.get(path, params=params, headers=headers)
+            response = self.requests.get(uri, params=params, headers=headers)
 
         elif method == 'delete':
-            response = self.requests.delete(path, params=params,
+            response = self.requests.delete(uri, params=params,
                                             headers=headers)
         elif method == 'post':
-            response = self.requests.post(path, data=json.dumps(params),
+            response = self.requests.post(uri, data=json.dumps(params),
                                           headers=headers)
 
         elif method == 'put':
-            response = self.requests.put(path, data=json.dumps(params),
+            response = self.requests.put(uri, data=json.dumps(params),
                                          headers=headers)
 
         if response.ok is False:
