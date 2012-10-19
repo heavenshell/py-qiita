@@ -14,12 +14,7 @@ from unittest import TestCase
 
 
 def settings():
-    import os
-    params = {'url_name': None, 'password': None}
-    if 'QIITA_URL_NAME' in os.environ:
-        params['url_name'] = os.environ['QIITA_URL_NAME']
-    if 'QIITA_PASSWORD' in os.environ:
-        params['password'] = os.environ['QIITA_PASSWORD']
+    params = {'url_name': 'heavenshell', 'password': 'foobar'}
 
     return params
 
