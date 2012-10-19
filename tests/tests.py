@@ -20,12 +20,14 @@ def settings():
 
 
 def dummy_response(m, filename=None):
+    import os
     import requests
     response = requests.Response()
     response.status_code = 200
     if filename is None:
         response._content = ''
     else:
+        filename = os.path.dirname(os.path.abspath(__file__)) + '/' + filename
         with open(filename, 'r') as f:
             data = f.read()
             response._content = data
