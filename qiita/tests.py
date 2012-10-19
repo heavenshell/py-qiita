@@ -34,6 +34,14 @@ class TestQiita(TestCase):
         from . import json
         self.assertTrue(hasattr(json, 'dumps'))
 
+    def test_shortcut(self):
+        """ qiita should import Client, Items, Tags, Users. """
+        from qiita import Client, Items, Tags, Users
+        self.assertTrue(isinstance(Client(), Client))
+        self.assertTrue(isinstance(Items(), Items))
+        self.assertTrue(isinstance(Tags(), Tags))
+        self.assertTrue(isinstance(Users(), Users))
+
 
 class TestCient(TestCase):
     def setUp(self):
@@ -68,6 +76,20 @@ class TestCient(TestCase):
         client = Client(requests=requests)
         result = client.rate_limit()
         self.assertEqual(result.keys(), ['limit', 'remaining'])
+
+    def test_login_automatically(self):
+        """ Client should get token when url_name and password set. """
+        self.assertTrue(self.client.token is not None)
+
+    def test_token_exists(self):
+        """ Client should authorize when only token set. """
+        from .items import Items
+        token = self.client.token
+        client = Items(token=token)
+
+        params = {'stocked': 'true'}
+        items = client.search_items(query='vim', params=params)
+        self.assertTrue('body' in items[0])
 
 
 class TestItems(TestCase):
