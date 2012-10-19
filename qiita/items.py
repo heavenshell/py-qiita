@@ -62,7 +62,7 @@ class Items(Client):
         return self.get('/search', params)
 
     def stock_item(self, uuid):
-        """Get user's stock.
+        """Stock item.
 
         :param uuid:
         """
