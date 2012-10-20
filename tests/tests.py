@@ -27,8 +27,9 @@ def dummy_response(m, filename=None):
     if filename is None:
         response._content = ''
     else:
-        filename = os.path.dirname(os.path.abspath(__file__)) + '/' + filename
-        with open(filename, 'r') as f:
+        root_path = os.path.dirname(os.path.abspath(__file__))
+        file_path = root_path + '/' + filename
+        with open(file_path, 'r') as f:
             data = f.read()
             response._content = data
 
