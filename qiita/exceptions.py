@@ -10,6 +10,7 @@
     :license: BSD, see LICENSE for more details.
 """
 
+
 class QiitaException(Exception):
     pass
 
