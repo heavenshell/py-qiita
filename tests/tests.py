@@ -105,6 +105,7 @@ class TestCient(TestCase):
 
     @patch('qiita.client.requests.get')
     def test_should_set_requests_module(self, m):
+        """ HTTP Client should set to requests property. """
         import requests
         from qiita.client import Client
         dummy_response(m, 'data/rate_limit.json')
