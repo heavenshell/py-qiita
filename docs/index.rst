@@ -3,10 +3,10 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to Qiita's documentation!
-=================================
-
 Python wrapper for Qiita API v1.
+================================
+
+Python wrapper for `Qiita <http://qiita.com/>`_ API v1.
 
 Installation
 ------------
