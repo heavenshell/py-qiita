@@ -3,6 +3,8 @@ Qiita
 
 Python wrapper for Qiita API v1.
 
+.. image:: https://secure.travis-ci.org/heavenshell/py-qiita.png
+
 Installation
 ------------
 
