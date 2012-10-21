@@ -26,10 +26,7 @@ setup(
     platforms='any',
     packages=find_packages(app_name),
     package_dir={'': app_name},
-    install_requires=[
-        'requests',
-        'mock'
-    ],
+    install_requires=['simplejson', 'requests', 'mock'],
     classifiers=[
         'Development Status :: 4 - Beta',
         'Environment :: Web Environment',
