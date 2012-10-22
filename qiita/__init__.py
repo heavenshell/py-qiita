@@ -20,5 +20,5 @@ from .users import Users
 from .tags import Tags
 
 
-__version__ = '0.1'
+__version__ = '0.1.1'
 __all__ = ['json', 'Client', 'Items', 'Users', 'Tags']
