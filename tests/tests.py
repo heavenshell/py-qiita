@@ -51,7 +51,7 @@ class TestQiita(TestCase):
     def test_has_version(self):
         """ Qiita modlue has version. """
         from qiita import __version__
-        self.assertEqual(__version__, '0.1')
+        self.assertEqual(__version__, '0.1.1')
 
     def test_has_json(self):
         """ Qiita modlue can load JSON library. """
