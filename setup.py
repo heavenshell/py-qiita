@@ -24,8 +24,8 @@ setup(
     long_description=description,
     license='BSD',
     platforms='any',
-    packages=find_packages(app_name),
-    package_dir={'': app_name},
+    packages=find_packages(exclude=['tests']),
+    package_dir={'': '.'},
     install_requires=['simplejson', 'requests', 'mock'],
     classifiers=[
         'Development Status :: 4 - Beta',
